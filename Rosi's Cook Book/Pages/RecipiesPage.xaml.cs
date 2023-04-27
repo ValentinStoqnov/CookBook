@@ -52,7 +52,7 @@ namespace Rosi_s_Cook_Book
             }
             else 
             {
-                return ((item as Recipie).RecipieName.IndexOf(SearchBar.Text, StringComparison.OrdinalIgnoreCase) >= 1);
+                return ((item as Recipie).RecipieName.IndexOf(SearchBar.Text, StringComparison.OrdinalIgnoreCase) >= 0);
             }      
         }
 
