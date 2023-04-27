@@ -22,7 +22,7 @@
                  Background="LightGray"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Center"
-                 Margin="15,0,0,0"/>
+                 Margin="15,0,0,0" TextChanged="SearchBar_TextChanged"/>
 
         <Button x:Name="BtnForward"
                 Grid.Row="2"

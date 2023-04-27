@@ -33,6 +33,27 @@ namespace Rosi_s_Cook_Book
             InitializeComponent();
 
             GetAllRecipies();
+            SetUpSearchBar();
+            
+        }
+
+        private void SetUpSearchBar() 
+        {
+            RecipiesLv.ItemsSource = RecipieCollection;
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(RecipiesLv.ItemsSource);
+            view.Filter = RecipiesFilter;
+        }
+
+        private bool RecipiesFilter(object item)
+        {
+            if (SearchBar.Text == String.Empty)
+            {
+                return true;
+            }
+            else 
+            {
+                return ((item as Recipie).RecipieName.IndexOf(SearchBar.Text, StringComparison.OrdinalIgnoreCase) >= 1);
+            }      
         }
 
         private void GetAllRecipies() 
@@ -79,6 +100,11 @@ namespace Rosi_s_Cook_Book
         {
             Recipie rcp = RecipiesLv.SelectedItem as Recipie;
             NavigationHelper.OpenRecipesViewPage(rcp.FilePath);
+        }
+
+        private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CollectionViewSource.GetDefaultView(RecipiesLv.ItemsSource).Refresh();
         }
     }
 }
