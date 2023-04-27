@@ -1,0 +1,66 @@
+﻿<Page x:Class="Rosi_s_Cook_Book.Pages.RecipiesCreateAndEditPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Rosi_s_Cook_Book.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="RecipiesCreateAndEditPage">
+
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="1">
+            <Label Content="Име:" 
+                   FontSize="20"/>
+            <Label Content="Продукти:" 
+                   Margin="0,30,0,0" 
+                   FontSize="20"/>
+            <Label Content="Начин на приготвяне:" 
+                   Margin="0,50,0,0" 
+                   FontSize="15"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" 
+                    Grid.Column="1">
+            <TextBox x:Name="TxtBoxName" 
+                     Width="300"/>
+            <DataGrid x:Name="ProductsDg" 
+                      Height="100"
+                      CanUserAddRows="True"
+                      ItemsSource="{Binding ProductsDt,RelativeSource={RelativeSource AncestorType=Page}}"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Продукт" Binding="{Binding Products}"/>
+                    <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}"/>
+                </DataGrid.Columns>
+                
+            </DataGrid>
+            <TextBox x:Name="TxtBoxHowItsMade" 
+                     Height="235"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" 
+                    Grid.Row="2" 
+                    Grid.Column="1"
+                    HorizontalAlignment="Center"
+                    Height="30">
+            <Button x:Name="BtnSave" 
+                    Content="Запиши"
+                    Width="60"
+                    Margin="0,0,30,0" Click="BtnSave_Click"/>
+            <Button x:Name="BtnCancel" 
+                    Content="Отказ"
+                    Width="60"
+                    Margin="30,0,0,0" Click="BtnCancel_Click"/>
+        </StackPanel>
+        
+
+    </Grid>
+</Page>
