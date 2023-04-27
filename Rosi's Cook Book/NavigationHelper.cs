@@ -24,9 +24,9 @@ namespace Rosi_s_Cook_Book
             mw.ContentFrame.Content = RecCreateEdit;
         }
 
-        public static void OpenRecipiesEditPage() 
+        public static void OpenRecipiesEditPage(string FilePath) 
         {
-            RecipiesCreateAndEditPage RecCreateEdit = new RecipiesCreateAndEditPage("Edit");
+            RecipiesCreateAndEditPage RecCreateEdit = new RecipiesCreateAndEditPage("Edit",FilePath);
             MainWindow mw = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive) as MainWindow;
             mw.ContentFrame.Content = RecCreateEdit;
         }

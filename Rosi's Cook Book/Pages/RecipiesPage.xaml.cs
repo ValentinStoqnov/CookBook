@@ -59,7 +59,8 @@ namespace Rosi_s_Cook_Book
 
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
-            NavigationHelper.OpenRecipiesEditPage();
+            Recipie rcp = RecipiesLv.SelectedItem as Recipie;
+            NavigationHelper.OpenRecipiesEditPage(rcp.FilePath);
         }
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)

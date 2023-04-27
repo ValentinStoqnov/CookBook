@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,23 +24,83 @@ namespace Rosi_s_Cook_Book.Pages
     public partial class RecipiesCreateAndEditPage : Page
     {
         public DataTable ProductsDt { get; set; } = new DataTable();
-
-        
+        private string createOrEdit = "";
+        private string recipieFilePath = "";
+        private bool recipieGotCreated;
         public RecipiesCreateAndEditPage(string CreateOrEdit)
         {
+            createOrEdit = CreateOrEdit;
+
             InitializeComponent();
 
             PrepareDataTable();
         }
 
-        private void CreateRecepie() 
+        public RecipiesCreateAndEditPage(string CreateOrEdit, string FilePath) : this(CreateOrEdit)
         {
-            string path = @$"{AppDomain.CurrentDomain.BaseDirectory}Data\{TxtBoxName.Text}.xml";
+            TxtBoxName.IsEnabled = false;
+            if (CreateOrEdit == "Edit")
+            {
+                recipieFilePath = FilePath;
+                LoadRecipie(FilePath);
+            }
+        }
 
-            using (XmlWriter writer = XmlWriter.Create(path))
+        private void LoadRecipie(string xmlFilePath) 
+        {
+            //Loads XML File
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.Load(xmlFilePath);
+
+            //Gets the Name
+            XmlNodeList NameNodeList = xmlDocument.DocumentElement.GetElementsByTagName("Name");
+            string NameNode = NameNodeList.Item(0).InnerText;
+
+            //Gets All the Products and Quantity
+            XmlNodeList ProductsNodeList = xmlDocument.DocumentElement.GetElementsByTagName("Products");
+            for (int i = 0; i < ProductsNodeList.Item(0).ChildNodes.Count; i++)
             {
 
 
+                DataRow NewDr = ProductsDt.NewRow();
+                NewDr[0] = ProductsNodeList.Item(0).ChildNodes.Item(i).ChildNodes.Item(0).InnerText;
+                NewDr[1] = ProductsNodeList.Item(0).ChildNodes.Item(i).ChildNodes.Item(1).InnerText;
+                ProductsDt.Rows.Add(NewDr);
+            }
+
+            //Gets the HowItsMade part
+            XmlNodeList HowItsMadeNodeList = xmlDocument.DocumentElement.GetElementsByTagName("HowItsMade");
+            string HowItsMadeNode = HowItsMadeNodeList.Item(0).InnerText;
+
+            //Sets the Textboxes
+            TxtBoxName.Text = NameNode;
+            TxtBoxHowItsMade.Text = HowItsMadeNode;
+        }
+
+        private void CreateRecepie() 
+        {
+            string path = @$"{AppDomain.CurrentDomain.BaseDirectory}Data\{TxtBoxName.Text}.xml";
+            if (File.Exists(path))
+            {
+                MessageBox.Show("Вече съществува рецепта с това име!");
+                recipieGotCreated = false;
+            }
+            else 
+            {
+                CreateXmlFile(path);
+                recipieGotCreated = true;
+            } 
+        }
+
+        private void EditRecepie(string xmlFilePath)
+        {
+            CreateXmlFile(xmlFilePath);
+        }
+
+        private void CreateXmlFile(string Path) 
+        {
+            using (XmlWriter writer = XmlWriter.Create(Path))
+            {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("Recepie");
                 writer.WriteElementString("Name", $"{TxtBoxName.Text}");
@@ -56,8 +117,7 @@ namespace Rosi_s_Cook_Book.Pages
                 writer.WriteEndElement();
                 writer.Flush();
             }
-
-        }
+        } 
 
         private void PrepareDataTable() 
         {
@@ -65,17 +125,23 @@ namespace Rosi_s_Cook_Book.Pages
            DataColumn KolichestvoCol = ProductsDt.Columns.Add("Quantity", typeof(string));
         }
 
-        private void EditRecepie() 
-        { 
-            
-        }
-
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            CreateRecepie();
-            NavigationHelper.OpenRecipiesPage();  
+            switch (createOrEdit) 
+            {
+                case "Create":
+                    CreateRecepie();
+                    if (recipieGotCreated) 
+                    {
+                        NavigationHelper.OpenRecipiesPage();
+                    }
+                    break;
+                case "Edit":
+                    EditRecepie(recipieFilePath);
+                    NavigationHelper.OpenRecipiesPage();
+                    break;
+            }  
         }
-
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.OpenRecipiesPage();
